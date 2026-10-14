@@ -1,0 +1,8 @@
+export default function IncidentTable({ incidents, onEdit, onMove, busy }) {
+  return <div className="table-wrap"><table><thead><tr>{['Race','Camera','Turn / Post','Time','Vídeo','Report','N.F.A.','Obs','Ações'].map(label => <th key={label} scope="col">{label}</th>)}</tr></thead><tbody>
+    {incidents.length ? incidents.map((item,index) => <tr key={item._id} className={item.curva === 'Red Flag' ? 'red-flag' : item.curva === 'Slow Flag' ? 'slow-flag' : item.curva === 'Start' ? 'start-flag' : item.priority ? 'priority' : ''}>
+      <td><span className="race-number">{item.corrida}</span></td><td>{item.camera || '—'}</td><td>{item.curva || '—'}</td><td className="time-cell">{item.hora}</td>
+      <td>{item.video ? '✓' : '—'}</td><td><span className={item.report ? 'badge report' : ''}>{item.report ? 'Report' : '—'}</span></td><td><span className={item.nfa ? 'badge nfa' : ''}>{item.nfa ? 'N.F.A.' : '—'}</span></td><td className="observations">{item.priority && <span className="badge">Prioridade </span>}{item.obs || '—'}</td>
+      <td className="row-actions"><button className="secondary small" onClick={() => onEdit(item)} aria-label={'Editar incidente ' + item.curva}>Editar</button><button className="plain small" disabled={busy || index === 0} onClick={() => onMove(item,incidents[index-1])} aria-label="Mover para cima">↑</button><button className="plain small" disabled={busy || index === incidents.length-1} onClick={() => onMove(item,incidents[index+1])} aria-label="Mover para baixo">↓</button></td></tr>) : <tr><td colSpan="9" className="empty">Sem incidentes para os filtros selecionados.</td></tr>}
+  </tbody></table></div>;
+}
