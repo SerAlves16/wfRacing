@@ -1,7 +1,7 @@
 *{box-sizing:border-box}
 body{margin:0;background:#f4f4f4;color:#343434;font-family:Arial,Helvetica,sans-serif;font-size:14px}
 button,input,textarea,select{font:inherit}
-button{cursor:pointer;border:1px solid transparent;background:#e30613;color:white;border-radius:6px;padding:11px 16px;font-weight:600}
+button{cursor:pointer;border:1px solid transparent;background:#e30613;color:white;border-radius:6px;padding:11px 16px;font-weight:600;touch-action:manipulation}
 button:hover{filter:brightness(.95)}button:disabled{opacity:.5;cursor:not-allowed}
 button.secondary{background:white;border-color:#d9d9d9;color:#343434}.plain{background:transparent;color:inherit;border-color:transparent}.small{padding:6px 9px;font-size:12px}
 input,textarea,select{width:100%;padding:11px 12px;border:1px solid #ccc;border-radius:5px;background:white;color:#333}
@@ -21,3 +21,26 @@ label{display:grid;gap:7px;font-size:13px;font-weight:600}h1,h2,h3,p{margin-top:
 .login-page{min-height:100vh;display:grid;place-items:center;border-top:6px solid #e30613;background:linear-gradient(135deg,#f1f1f1,#fafafa)}.login-card{width:min(420px,calc(100% - 40px));padding:35px;background:white;border:1px solid #ddd;border-radius:10px;box-shadow:0 12px 40px #0000000d}.login-card img{width:190px;margin-bottom:25px}.login-card h1{font-size:24px;margin-bottom:12px}.login-card>p:not(.eyebrow){line-height:1.6;color:#777}.login-card label{margin-top:18px}.login-card>button{width:100%;margin-top:24px}
 .error{background:#ffe5e7;color:#9d0c15;border:1px solid #ffc4c9;padding:13px;border-radius:5px;line-height:1.4}dialog{width:min(600px,calc(100% - 32px));max-height:90vh;border:1px solid #ddd;border-radius:10px;padding:24px;box-shadow:0 20px 100px #0003}dialog::backdrop{background:#0007}.modal-heading{justify-content:space-between;margin-bottom:20px}.modal-heading h2{margin:0}.modal-heading button{font-size:26px;padding:2px 8px}dialog form+form{margin-top:24px;padding-top:20px;border-top:1px solid #ddd}dialog form>label{margin:16px 0}dialog .actions{justify-content:flex-end;margin-top:20px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.checks{border:1px solid #ddd;border-radius:5px;margin:18px 0;display:flex;gap:18px;flex-wrap:wrap;padding:14px}.checks legend{font-size:12px;color:#777}.checks label{display:flex;align-items:center;gap:6px}.checks input{width:auto}.danger{background:#a71c26}.danger-zone{margin-top:24px;border-top:1px solid #ddd;padding-top:20px}.danger-zone p{line-height:1.6;color:#777}.option-list{list-style:none;padding:0;max-height:180px;overflow:auto}.option-list li{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
 @media(max-width:800px){.app-header{gap:15px;padding:15px}.app-header img{width:100px}.app-header h1{font-size:18px}.session{font-size:11px}.dashboard{padding:18px 14px}.filters{flex-wrap:wrap}.filters label:first-child{flex-basis:100%}.filters label{min-width:120px;flex:1}.toolbar .actions{flex-wrap:wrap}.result-count{font-size:12px}.section-heading{align-items:flex-start}.form-grid{gap:10px}.flag-actions{gap:8px}button{padding:10px 12px}}
+/* Keep quick registration visible while the incident list scrolls on desktop. */
+.incidents-heading{margin:0;display:flex;gap:10px;align-items:center}
+.race-workspace{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+.incident-panel{min-width:0}
+.quick-entry{position:sticky;top:20px}
+.quick-entry .numpad-panel{padding:18px}
+.quick-entry .section-heading h2{margin-bottom:14px}
+.numpad-types{display:flex;gap:6px}
+.numpad-types button{flex:1;min-height:48px;padding:10px 8px}
+.quick-entry .numpad-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;max-height:clamp(240px,calc(100dvh - 360px),600px);overflow:auto;overscroll-behavior:contain}
+.quick-entry .numpad-key{min-height:78px;gap:5px;font-size:28px}
+.quick-entry .flag-actions{background:white;border:1px solid #ddd;border-radius:8px;padding:14px;gap:8px;margin-top:12px}
+.quick-entry .flag-actions>span{flex-basis:100%;margin:0 0 4px}
+.quick-entry .flag-actions button{flex:1;min-height:48px;padding:10px 8px}
+.quick-entry .flag-actions kbd{display:none}
+.race-state{flex-basis:100%;font-size:12px;line-height:1.5;margin:4px 0 0;color:#666}
+.quick-entry .flag-actions .new-race{flex-basis:100%}
+.user-form{border:0;padding:0;margin:0}.user-form>label{margin-top:16px}.user-form .actions{margin-bottom:20px}.user-table{margin-top:20px}.user-table .badge{margin-left:6px}.user-notice{padding:12px;background:#eef8ef;border-radius:5px;color:#24733d}.user-table button{min-height:44px}
+.incident-panel .filters{flex-wrap:wrap}
+.incident-panel .filters label:first-child{min-width:180px}
+.incident-panel .row-actions button{min-width:44px;min-height:44px}
+/* On narrow touchscreens, show the keypad before the list without hiding either. */
+@media(max-width:1000px){.race-workspace{grid-template-columns:minmax(0,1fr)}.quick-entry{position:static;grid-row:1}.quick-entry .numpad-grid{grid-template-columns:repeat(auto-fill,minmax(85px,1fr));max-height:360px}.quick-entry .flag-actions kbd{display:inline}.quick-entry .flag-actions button{flex:0 1 auto;min-width:100px}}

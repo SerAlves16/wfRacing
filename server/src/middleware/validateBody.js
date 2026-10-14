@@ -23,6 +23,11 @@ module.exports = type => (req, res, next) => {
       result[field] = value;
     }
   }
+  // Manual typing must not bypass race-state validation through casing or surrounding spaces.
+  if (type === 'incident' && typeof result.curva === 'string') {
+    const flags = { start: 'Start', 'red flag': 'Red Flag', 'slow flag': 'Slow Flag' };
+    result.curva = flags[result.curva.trim().toLowerCase()] || result.curva;
+  }
   req.body = result;
   next();
 };

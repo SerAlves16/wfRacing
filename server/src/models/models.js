@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'operator', 'user'],
     default: 'user',
   },
+  tokenVersion: { type: Number, default: 0, min: 0 },
 });
 
 // Define o modelo User

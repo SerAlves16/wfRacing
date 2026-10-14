@@ -22,5 +22,7 @@ router.patch('/observations/:id', role('admin', 'operator'), validate('observati
 router.delete('/observations/:id', role('admin', 'operator'), validId, c.dropObsOptionsController.dropOneObsOption);
 router.delete('/observations', role('admin'), c.dropObsOptionsController.dropObsOptions);
 router.get('/races/current', c.getRaceController.getLastRaceId);
+router.get('/races', require('../controller/raceSessions').list);
+router.post('/races/new', role('admin', 'operator'), require('../controller/raceSessions').createNext);
 router.post('/races', role('admin', 'operator'), validate('race'), c.addRaceController.addRace);
 module.exports = router;

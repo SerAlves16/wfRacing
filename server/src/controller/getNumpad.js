@@ -4,7 +4,7 @@ const DadosNumpad = require("../models/numpadSchema");
 exports.getDataNumpad = async (req, res) => {
   try {
     // Buscar todos os dados no banco de dados
-    const dados = await DadosNumpad.find();
+    const dados = await DadosNumpad.find().sort({ _id: 1 });
     // Retornar os dados encontrados como resposta
     res.json(dados);
   } catch (error) {

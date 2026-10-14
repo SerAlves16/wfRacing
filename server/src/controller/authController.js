@@ -3,36 +3,25 @@ const bcrypt = require('bcrypt');
 const User = require('../models/models');
 const { generateToken } = require('../utilities/jwtUtils');
 const publicUser = user => ({ id: String(user._id), username: user.username, usertype: user.usertype });
-const credentialsValid = (username, password) => typeof username === 'string' && username.trim().length >= 1 && username.length <= 100 && typeof password === 'string' && password.length >= 8 && Buffer.byteLength(password) <= 72;
-const fail = (res, error) => res.status(error.code === 11000 ? 409 : error.name === 'ValidationError' ? 400 : 500).json({ message: error.code === 11000 ? 'Username already exists' : 'Unable to save user' });
+const users = require('../services/userService');
+const fail = (res, error) => res.status(error.status || (error.code === 11000 ? 409 : error.name === 'ValidationError' ? 400 : 500)).json({ message: error.status ? error.message : error.code === 11000 ? 'Este nome de utilizador já existe.' : 'Não foi possível guardar o utilizador.' });
+exports.listUsers = async (req, res) => {
+  try { res.json((await User.find().select('_id username usertype').sort({username:1})).map(publicUser)); }
+  catch { res.status(500).json({ message: 'Não foi possível consultar os utilizadores.' }); }
+};
 exports.registerUser = async (req, res) => {
-  const { username, password, usertype = 'user' } = req.body;
-  if (!credentialsValid(username, password) || !['admin', 'operator', 'user'].includes(usertype)) return res.status(400).json({ message: 'Invalid credentials or role; password must have 8 characters and at most 72 bytes' });
-  try {
-    const user = await User.create({ username: username.trim(), password: await bcrypt.hash(password, 10), usertype });
-    res.status(201).json({ message: 'User registered successfully', ...publicUser(user) });
-  } catch (error) { fail(res, error); }
+  try { const user = await users.create(req.user._id, req.body); res.status(201).json({ message: 'Utilizador criado.', ...publicUser(user) }); }
+  catch (error) { fail(res, error); }
 };
 exports.editUser = async (req, res) => {
-  if (!mongoose.isObjectIdOrHexString(req.params.id)) return res.status(400).json({ message: 'Invalid user ID' });
-  const { username, password } = req.body;
-  if (!credentialsValid(username, password)) return res.status(400).json({ message: 'Invalid credentials' });
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: 'User not found' });
-    user.username = username.trim(); user.password = await bcrypt.hash(password, 10);
-    await user.save();
-    res.json({ message: 'User updated successfully', ...publicUser(user) });
-  } catch (error) { fail(res, error); }
+  if (!mongoose.isObjectIdOrHexString(req.params.id)) return res.status(400).json({ message: 'ID de utilizador inválido.' });
+  try { const {user,passwordChanged} = await users.update(req.user._id,req.params.id,req.body); res.json({ message: 'Utilizador atualizado.', ...publicUser(user), passwordChanged }); }
+  catch (error) { fail(res, error); }
 };
 exports.deleteUser = async (req, res) => {
-  if (!mongoose.isObjectIdOrHexString(req.params.id)) return res.status(400).json({ message: 'Invalid user ID' });
-  if (String(req.user._id) === req.params.id) return res.status(400).json({ message: 'Cannot delete your own account' });
-  try {
-    const user = await User.findByIdAndDelete(req.params.id);
-    if (!user) return res.status(404).json({ message: 'User not found' });
-    res.json({ message: 'User deleted successfully' });
-  } catch (error) { fail(res, error); }
+  if (!mongoose.isObjectIdOrHexString(req.params.id)) return res.status(400).json({ message: 'ID de utilizador inválido.' });
+  try { await users.remove(req.user._id,req.params.id); res.json({ message: 'Utilizador eliminado.' }); }
+  catch (error) { fail(res, error); }
 };
 exports.loginUser = async (req, res) => {
   const { username, password } = req.body;
